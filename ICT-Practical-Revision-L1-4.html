@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICT Practical Lessons</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230FA4AF'/%3E%3Cpath d='M18 34l10 10 18-22' fill='none' stroke='%23003135' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#003135; --deep:#024950; --rust:#964734; --teal:#0FA4AF; --ice:#AFDDE5;
+  --night:#00262a; --raised:#035a63; --teal-text:#4DC6CF; --rust-soft:#E8A692;
+  --line:rgba(175,221,229,.16); --muted:rgba(175,221,229,.78);
+  --ui:"Segoe UI Variable Text","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --display:"Segoe UI Variable Display","Segoe UI Light","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html{color-scheme:dark;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--ink);color:var(--ice);font:400 1.0625rem/1.6 var(--ui)}
+a{color:inherit}
+.wrap{width:min(1080px,calc(100% - 32px));margin:0 auto}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:6px}
+h1:focus{outline:none}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mark{width:38px;height:38px;border-radius:10px;background:var(--teal);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:.8rem}
+.brand b{display:block;font-weight:600;line-height:1.2;color:#fff}
+.brand small{display:block;color:var(--muted);font-size:.82rem;line-height:1.2}
+
+/* the address-bar path: the one repeating motif */
+.path{display:flex;flex-wrap:wrap;align-items:center;gap:2px;width:fit-content;max-width:100%;padding:4px;background:var(--night);border:1px solid var(--line);border-radius:10px}
+.seg{padding:5px 11px;border-radius:6px;line-height:1.35}
+.seg:last-child{background:rgba(15,164,175,.24);color:#fff}
+.sep{color:var(--teal-text);padding:0 1px;font-size:1.15em;line-height:1}
+
+/* hero */
+.hero{padding:clamp(28px,7vw,84px) 0 clamp(8px,2vw,24px)}
+.hero h1{font:300 clamp(2.5rem,7vw,5rem)/1.04 var(--display);letter-spacing:-.025em;margin:0;max-width:14ch;color:#fff}
+.hero p{margin:22px 0 0;max-width:54ch;color:var(--muted);font-size:1.15rem}
+.hero .path{margin-top:38px;font-size:1.05rem}
+.hero .path>*{opacity:0;animation:crumb .55s ease forwards;animation-delay:calc(var(--k)*.4s + .3s)}
+@keyframes crumb{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+
+.sec-h{font:600 1.05rem var(--ui);color:var(--muted);margin:44px 0 14px}
+
+/* home tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tile{display:flex;flex-direction:column;justify-content:space-between;gap:22px;min-height:230px;padding:24px 26px;background:var(--deep);border-radius:18px;text-decoration:none;color:var(--ice)}
+.tile:hover{background:var(--raised)}
+.num{font:200 4.4rem/1 var(--display);color:var(--teal)}
+.tile h2{font:600 1.4rem/1.2 var(--ui);margin:0 0 6px;color:#fff}
+.tile p{margin:0;color:var(--muted)}
+.meta{font-size:.92rem;color:var(--muted)}
+.bar{height:4px;border-radius:4px;background:rgba(175,221,229,.18);overflow:hidden;margin-bottom:9px}
+.bar i{display:block;height:100%;width:var(--p,0%);background:var(--teal);border-radius:4px}
+.tile.sc{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;gap:28px;min-height:0;background:var(--rust);color:#fff}
+.tile.sc:hover{background:#a55039}
+.tile.sc p{color:rgba(255,255,255,.9)}
+.demo{display:flex;flex-wrap:wrap;gap:16px}
+.demo span{display:inline-flex;align-items:center;gap:5px}
+
+/* keycaps */
+kbd{display:inline-block;font:600 .84em/1.3 var(--ui);color:#fff;background:var(--raised);border:1px solid rgba(175,221,229,.35);border-bottom-width:3px;border-radius:6px;padding:.1em .55em;white-space:nowrap}
+.sc kbd{background:rgba(0,38,42,.55);border-color:rgba(255,255,255,.35)}
+.plus,.then{color:var(--muted);font-size:.9rem}
+.then{padding:0 4px}
+
+/* pages */
+.back{display:inline-flex;align-items:center;gap:9px;color:var(--muted);text-decoration:none;padding:6px 0}
+.back::before{content:"";width:8px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)}
+.back:hover{color:#fff}
+.lhead{display:flex;align-items:flex-end;flex-wrap:wrap;gap:clamp(14px,3vw,30px);margin:20px 0 6px}
+.bign{font:200 clamp(4.5rem,13vw,8rem)/.85 var(--display);color:var(--teal)}
+.bign.word{font-size:clamp(3rem,9vw,5.5rem)}
+.lhead h1{font:300 clamp(2rem,5vw,3.4rem)/1.08 var(--display);letter-spacing:-.02em;margin:0;color:#fff}
+.lhead p{margin:10px 0 0;color:var(--muted);max-width:52ch}
+.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin:30px 0 8px}
+.prog{min-width:220px;flex:1 1 220px;max-width:340px;font-size:.92rem;color:var(--muted)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid rgba(175,221,229,.35);background:transparent;color:var(--ice);font:600 .9rem var(--ui);cursor:pointer}
+.btn:hover{border-color:var(--ice);color:#fff}
+.btn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+
+/* lessons */
+.lesson{background:var(--deep);border-radius:14px;margin:10px 0}
+summary{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;list-style:none;border-radius:14px}
+summary::-webkit-details-marker{display:none}
+.idx{flex:none;width:32px;height:32px;border-radius:50%;background:var(--teal);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:.95rem}
+.ltitle{flex:1;font-weight:600;color:#fff;font-size:1.06rem;line-height:1.35}
+.tick{flex:none;display:inline-flex;align-items:center;gap:7px;padding:6px 13px 6px 10px;border-radius:999px;border:1px solid rgba(175,221,229,.35);background:transparent;color:var(--ice);font:600 .85rem var(--ui);cursor:pointer}
+.tick svg{opacity:.4}
+.tick:hover{border-color:var(--ice)}
+.tick.on{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+.tick.on svg{opacity:1}
+.chev{flex:none;width:9px;height:9px;margin:0 6px 4px 2px;border-right:2px solid var(--teal-text);border-bottom:2px solid var(--teal-text);transform:rotate(45deg);transition:transform .2s}
+details[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-3px}
+.body{padding:2px 20px 22px 64px}
+.item{margin-top:18px}
+.lab{font-weight:600;color:var(--teal-text);font-size:.94rem;margin-bottom:7px}
+.text{margin:8px 0 0}
+.keys{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.klabel{color:var(--muted);font-size:.92rem;margin-right:4px}
+.note{margin-top:18px;padding:12px 16px;border-left:3px solid var(--rust);background:rgba(150,71,52,.22);border-radius:0 10px 10px 0;font-size:.97rem}
+.note strong{color:var(--rust-soft);margin-right:4px}
+.tbl{overflow-x:auto;margin-top:14px;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.97rem}
+th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{color:var(--teal-text);font-weight:600;background:rgba(0,38,42,.45)}
+tbody tr:last-child>*{border-bottom:0}
+tbody th{font-weight:600;color:#fff}
+
+/* shortcuts page */
+.srow{display:grid;grid-template-columns:minmax(170px,270px) 1fr;gap:16px;align-items:center;padding:13px 18px;background:var(--deep);border-radius:12px;margin:8px 0}
+.skeys{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.act{transition:filter .2s}
+.covered .srow{cursor:pointer}
+.covered .srow:not(.show) .act{filter:blur(7px);user-select:none}
+.hint{color:var(--muted);font-size:.95rem;margin:6px 0 0}
+
+/* prev / next */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:46px 0 8px}
+.pg{display:block;padding:16px 20px;background:var(--deep);border-radius:14px;text-decoration:none}
+.pg:hover{background:var(--raised)}
+.pg small{display:block;color:var(--muted);font-size:.86rem}
+.pg b{color:#fff;font-weight:600}
+.pg.next{grid-column:2;text-align:right}
+.foot{color:var(--muted);font-size:.88rem;padding:34px 0 46px}
+
+a.btn{text-decoration:none}
+.btn.go{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+.btn.go:hover{background:var(--ice);border-color:var(--ice);color:var(--ink)}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* quiz */
+.tile.qz{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;gap:28px;min-height:0;box-shadow:inset 0 0 0 2px var(--teal)}
+.qchips{display:flex;flex-wrap:wrap;gap:8px}
+.qchip{display:inline-flex;align-items:baseline;gap:8px;padding:6px 14px;border-radius:999px;background:var(--night);color:var(--muted);font-size:.92rem}
+.qchip b{color:var(--teal-text);font-weight:600}
+.qcard{background:var(--deep);border-radius:18px;padding:clamp(18px,3vw,28px);margin-top:10px}
+.qsrc{color:var(--muted);font-size:.92rem;margin-bottom:8px}
+.qtext{font:600 clamp(1.15rem,2.6vw,1.45rem)/1.4 var(--ui);color:#fff;margin:0}
+.qtext:focus{outline:none}
+.opts{display:grid;gap:10px;margin-top:20px}
+.opt{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--ice);font:400 1rem/1.5 var(--ui);cursor:pointer}
+.qcard:not(.done) .opt:hover{background:var(--raised);border-color:rgba(175,221,229,.35)}
+.done .opt{cursor:default}
+.ol{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(175,221,229,.35);display:grid;place-items:center;font-weight:700;font-size:.85rem;color:var(--teal-text)}
+.ot{flex:1;padding-top:2px}
+.otag{flex:none;margin-left:auto;padding-top:3px;font-weight:600;font-size:.85rem}
+.opt.ok{background:var(--teal);border-color:var(--teal);color:var(--ink)}
+.opt.ok .ol{background:var(--ink);border-color:var(--ink);color:var(--ice)}
+.opt.bad{background:var(--rust);border-color:var(--rust);color:#fff}
+.opt.bad .ol{border-color:#fff;color:#fff}
+.opt.dim{opacity:.55}
+.fb{margin-top:16px;padding:12px 16px;border-left:3px solid var(--teal);background:rgba(15,164,175,.24);border-radius:0 10px 10px 0;font-size:.97rem}
+.fb.no{border-left-color:var(--rust);background:rgba(150,71,52,.22)}
+.fb b{display:block;margin-bottom:2px;color:var(--teal-text)}
+.fb.no b{color:var(--rust-soft)}
+.qnav{margin-top:18px}
+.qres{display:flex;align-items:center;flex-wrap:wrap;gap:clamp(18px,4vw,40px);margin:26px 0 6px}
+.qbig{font:200 clamp(4.5rem,13vw,8rem)/.85 var(--display);color:var(--teal)}
+.qbig small{font-size:.4em;color:var(--muted)}
+.qrt{font:300 clamp(1.8rem,4.5vw,2.8rem)/1.1 var(--display);letter-spacing:-.02em;color:#fff;margin:0}
+.qrt:focus{outline:none}
+.qres p{margin:10px 0 0;color:var(--muted);max-width:46ch}
+.qres .btns{margin-top:20px}
+.rv{background:var(--deep);border-radius:14px;padding:16px 20px;margin:10px 0}
+.rq{font-weight:600;color:#fff}
+.ra{display:flex;gap:12px;margin-top:10px}
+.ra b{flex:none;width:8.5em;font-weight:600}
+.ra.no b{color:var(--rust-soft)}
+.ra.yes b{color:var(--teal-text)}
+.rw{margin:10px 0 0;color:var(--muted);font-size:.97rem}
+.rl{display:inline-block;margin-top:8px;color:var(--teal-text);font-weight:600}
+
+/* lights */
+body::before,body::after{content:"";position:fixed;z-index:-1;width:70vmax;height:70vmax;border-radius:50%;pointer-events:none;will-change:transform}
+body::before{top:-38vmax;right:-22vmax;background:radial-gradient(closest-side,rgba(15,164,175,.28),transparent);animation:drift 22s ease-in-out infinite alternate}
+body::after{bottom:-44vmax;left:-26vmax;background:radial-gradient(closest-side,rgba(150,71,52,.16),transparent);animation:drift 28s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate3d(-6vmax,5vmax,0) scale(1.08)}}
+.hero h1{font-weight:600;letter-spacing:-.04em;line-height:1}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .hero h1{background:linear-gradient(180deg,#fff 25%,var(--ice) 130%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 26px rgba(15,164,175,.4))}
+}
+.mark{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.brand:hover .mark{transform:rotate(-6deg) scale(1.06);box-shadow:0 0 24px rgba(15,164,175,.7)}
+
+/* motion */
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+@keyframes grow{from{width:0}}
+@keyframes reveal{from{opacity:0;transform:translateY(-6px)}}
+@keyframes glowok{from{box-shadow:0 0 0 0 rgba(15,164,175,.7)}to{box-shadow:0 0 0 14px rgba(15,164,175,0)}}
+@keyframes shake{20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+#app>*{animation:rise .4s cubic-bezier(.2,.7,.2,1) backwards}
+.tile .bar i{animation:grow .9s cubic-bezier(.2,.7,.2,1) backwards}
+.bar i{transition:width .5s ease}
+.tile,.pg{position:relative;overflow:hidden;isolation:isolate;transition:background .25s ease,transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
+.tile::before,.pg::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .3s;pointer-events:none;background:radial-gradient(260px circle at var(--mx,50%) var(--my,0%),rgba(175,221,229,.16),transparent 70%)}
+.num{transition:color .25s,transform .35s cubic-bezier(.2,.7,.2,1)}
+kbd{transition:transform .15s ease,border-bottom-width .15s ease}
+.btn{position:relative;overflow:hidden;isolation:isolate;transition:transform .2s cubic-bezier(.2,.7,.2,1),background .2s,border-color .2s,color .2s,box-shadow .25s}
+.btn.go::after{content:"";position:absolute;top:0;bottom:0;left:0;width:55%;z-index:-1;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-130%) skewX(-18deg)}
+.tick{transition:background .2s,border-color .2s,color .2s,transform .15s}
+.tick:active{transform:scale(.94)}
+.tick svg{transition:transform .3s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.tick.on svg{transform:scale(1.2)}
+summary{transition:background .2s}
+summary:hover{background:rgba(175,221,229,.05)}
+.idx{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+summary:hover .idx{transform:scale(1.1)}
+details[open]>.body{animation:reveal .35s cubic-bezier(.2,.7,.2,1)}
+.back::before{transition:transform .2s}
+.srow{transition:background .2s,transform .2s}
+.opt{transition:background .18s,border-color .18s,transform .18s,opacity .25s}
+.opt.ok{animation:glowok .9s ease-out}
+.opt.bad{animation:shake .38s ease}
+.fb{animation:rise .35s cubic-bezier(.2,.7,.2,1)}
+@media (hover:hover){
+  .tile:hover{transform:translateY(-3px);box-shadow:0 18px 30px -16px rgba(0,38,42,.9)}
+  .tile.qz:hover{box-shadow:inset 0 0 0 2px var(--teal),0 18px 30px -16px rgba(0,38,42,.9)}
+  .tile:hover::before,.pg:hover::before{opacity:1}
+  .tile:hover .num{color:var(--teal-text);transform:translateX(6px)}
+  .tile.sc:hover kbd{transform:translateY(2px);border-bottom-width:1px}
+  .pg:hover{transform:translateY(-2px)}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:not(.go):hover{box-shadow:0 0 18px -4px rgba(175,221,229,.35)}
+  .btn.go:hover{box-shadow:0 8px 22px -8px rgba(15,164,175,.8)}
+  .btn.go:hover::after{transform:translateX(260%) skewX(-18deg);transition:transform .7s ease}
+  .back:hover::before{transform:translateX(-3px) rotate(45deg)}
+  .srow:hover{background:var(--raised);transform:translateX(4px)}
+  .qcard:not(.done) .opt:hover{transform:translateX(3px)}
+}
+.tile:active{transform:translateY(-1px) scale(.995)}
+.btn:active{transform:scale(.96)}
+.qcard:not(.done) .opt:active{transform:scale(.99)}
+
+@media (max-width:700px){
+  .tiles{grid-template-columns:1fr}
+  .tile{min-height:0}
+  .tile.sc,.tile.qz{flex-direction:column;align-items:flex-start}
+  .opt{flex-wrap:wrap;padding:12px 13px;gap:12px}
+  .otag{flex-basis:100%;margin-left:40px;padding-top:0}
+  .ra{flex-direction:column;gap:2px}
+  .ra b{width:auto}
+  .body{padding-left:20px}
+  .srow{grid-template-columns:1fr;gap:8px}
+  .tick .tl{display:none}
+  .tick{padding:7px 9px}
+  .pager{grid-template-columns:1fr}
+  .pg.next{grid-column:auto;text-align:left}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .hero .path>*{opacity:1!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#/" aria-label="ICT Practical revision, home">
+      <span class="mark" aria-hidden="true">ICT</span>
+      <span><b>ICT Practical</b><small>Revision guide</small></span>
+    </a>
+  </header>
+  <main id="app"><noscript><p>This guide needs JavaScript. Please turn it on in your browser.</p></noscript></main>
+  <footer class="foot">Offline revision guide for the ICT practical lectures. It works without internet.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- content ---------- */
+  const LECTURES = [
+    { id: "l1", num: 1, title: "Files & Folders",
+      blurb: "Make folders, copy, cut and rename.",
+      lessons: [
+        { id: "l1-1", title: "Make a folder and put a txt (or any file) inside it", items: [
+          { label: "Make the folder", path: "Right-click empty space > New > Folder > type the name > Enter", keys: [["Ctrl", "Shift", "N"]] },
+          { label: "Make a txt file", path: "Right-click empty space > New > Text Document > type the name > Enter" },
+          { label: "Put a file inside: drag and drop", path: "Drag the file onto the folder and let go" },
+          { label: "Put a file inside: cut and paste", path: "Right-click the file > Cut > open the folder > Right-click empty space > Paste", keys: [["Ctrl", "X"], ["Ctrl", "V"]] }
+        ]},
+        { id: "l1-2", title: "Copy a file", items: [
+          { label: "Steps", path: "Right-click the file > Copy > open the destination > Right-click empty space > Paste", keys: [["Ctrl", "C"], ["Ctrl", "V"]],
+            note: "The original stays where it is, and you get a duplicate." }
+        ]},
+        { id: "l1-3", title: "Cut a file", items: [
+          { label: "Steps", path: "Right-click the file > Cut > open the destination > Right-click empty space > Paste", keys: [["Ctrl", "X"], ["Ctrl", "V"]],
+            note: "The file moves to the new place. If you cut a file and never paste it, nothing is lost: it stays where it was." }
+        ]},
+        { id: "l1-4", title: "Difference between copy and cut",
+          table: { head: ["Compare", "Copy", "Cut"], rows: [
+            ["What happens", "Makes a duplicate", "Moves the file"],
+            ["The original file", "Stays in the old place", "Is removed from the old place after you paste"],
+            ["Files at the end", "Two: the original and the copy", "One: in the new place"],
+            ["Shortcut", "[[Ctrl]] + [[C]]", "[[Ctrl]] + [[X]]"]
+          ]}
+        },
+        { id: "l1-5", title: "Rename a folder", items: [
+          { label: "Steps", path: "Right-click the folder > Rename > type the new name > Enter" },
+          { label: "Fast way", text: "Select the folder, press [[F2]], type the new name, then press [[Enter]]." }
+        ], note: "When you rename a file, keep its extension (like .txt) or it may not open." }
+      ]},
+
+    { id: "l2", num: 2, title: "Selecting Files & Shortcuts",
+      blurb: "Ways to select files, and how to make a shortcut.",
+      lessons: [
+        { id: "l2-1", title: "Select files: the methods and the differences",
+          table: { head: ["Method", "How", "What it selects"], rows: [
+            ["Mouse click", "Left-click a file", "One file"],
+            ["Drag box", "Hold left click on empty space and drag over the files", "Everything inside the box"],
+            ["[[Ctrl]] + [[A]]", "Click inside the folder, then press Ctrl + A", "All files in the folder"],
+            ["[[Ctrl]] + Left click", "Hold Ctrl and click each file you want", "Separate files that are not next to each other. Click again to deselect one."],
+            ["[[Shift]] + Left click", "Click the first file, hold Shift, click the last file", "A continuous range, from the first file to the last"]
+          ]},
+          items: [
+            { label: "Other ways", text: "Hold [[Shift]] and press the arrow keys to extend the selection one file at a time." },
+            { label: "Select all, none or invert", path: "See more (…) > Select all / Select none / Invert selection", note: "Invert selection selects everything you did not select." },
+            { label: "Tick boxes", path: "View > Show > Item check boxes", text: "Then tick the box next to a file to select it with the mouse." }
+          ]
+        },
+        { id: "l2-2", title: "Make a shortcut for a file", items: [
+          { label: "Step 1", path: "Right-click the file > Show more options > Create shortcut" },
+          { label: "Step 2", text: "A new file appears with a small arrow on its icon. Its name ends with “- Shortcut”." },
+          { label: "Step 3", text: "Drag it (or cut and paste it) to the Desktop, or anywhere you want." },
+          { label: "Faster way", path: "Right-click the file > Show more options > Send to > Desktop (create shortcut)" },
+          { label: "Another way", path: "Right-click the Desktop > New > Shortcut > Browse > choose the file > Next > type a name > Finish" }
+        ], note: "Deleting a shortcut does not delete the original file." }
+      ]},
+
+    { id: "l3", num: 3, title: "Start Menu & Display",
+      blurb: "The Start menu, power options, desktop icons, display settings and themes.",
+      lessons: [
+        { id: "l3-1", title: "Open the Start menu", items: [
+          { label: "With the keyboard", keys: [["Win"]], text: "Press the Windows key." },
+          { label: "Another keyboard way", keys: [["Ctrl", "Esc"]] },
+          { label: "Formal way", text: "Click the Start button (the Windows logo) on the taskbar." }
+        ]},
+        { id: "l3-2", title: "Lock, sleep, shut down and restart", items: [
+          { label: "Lock", path: "Start > your name or picture > Lock", keys: [["Win", "L"]] },
+          { label: "Sleep", path: "Start > Power button > Sleep" },
+          { label: "Shut down", path: "Start > Power button > Shut down" },
+          { label: "Restart", path: "Start > Power button > Restart" },
+          { label: "Quick way", text: "Press [[Win]] + [[X]], then [[U]], then [[S]] for Sleep, [[U]] for Shut down or [[R]] for Restart." }
+        ], note: "Sleep keeps your work in memory and wakes up quickly. Shut down closes everything. Restart shuts down and turns the PC on again." },
+        { id: "l3-3", title: "Change the size of the desktop icons", items: [
+          { label: "Steps", path: "Right-click the Desktop > View > Large icons / Medium icons / Small icons" },
+          { label: "Fast way", text: "Hold [[Ctrl]] and scroll the mouse wheel." }
+        ]},
+        { id: "l3-4", title: "Auto arrange the desktop icons", items: [
+          { label: "Steps", path: "Right-click the Desktop > View > Auto arrange icons" }
+        ], note: "A tick means it is on. Icons stay in order from the top-left, and you can’t drop them wherever you like." },
+        { id: "l3-5", title: "Align the desktop icons to the grid", items: [
+          { label: "Steps", path: "Right-click the Desktop > View > Align icons to grid" }
+        ], note: "Icons snap to invisible grid squares so they stay neat. If this option looks greyed out, turn off Auto arrange icons first." },
+        { id: "l3-6", title: "Show or hide the desktop icons", items: [
+          { label: "Steps", path: "Right-click the Desktop > View > Show desktop icons" }
+        ], note: "Untick it to hide every icon, tick it to show them again. The icons are only hidden, not deleted." },
+        { id: "l3-7", title: "Change brightness and turn on Night light", items: [
+          { label: "Open Settings", text: "Press [[Win]] + [[I]], or use Start > Settings." },
+          { label: "Brightness", path: "Settings > System > Display > Brightness", text: "Move the slider." },
+          { label: "Night light", path: "Settings > System > Display > Night light", text: "Turn it on. Click Night light to set its strength and a schedule." }
+        ], note: "Night light makes the screen warmer and easier on the eyes at night. A desktop PC with an external monitor may have no brightness slider, so use the buttons on the monitor." },
+        { id: "l3-8", title: "Change scale, display resolution and orientation", items: [
+          { label: "Scale", path: "Settings > System > Display > Scale & layout > Scale", text: "Choose 100%, 125%, 150%… This makes text and apps smaller or bigger." },
+          { label: "Display resolution", path: "Settings > System > Display > Scale & layout > Display resolution", text: "Choose from the list. Use the one marked Recommended." },
+          { label: "Display orientation", path: "Settings > System > Display > Scale & layout > Display orientation", text: "Landscape, Portrait, Landscape (flipped) or Portrait (flipped)." }
+        ], note: "After you change the resolution or orientation, click Keep changes within about 15 seconds. If you don’t, it goes back by itself." },
+        { id: "l3-9", title: "Change the background, colors and desktop icon images", items: [
+          { label: "Background", path: "Settings > Personalization > Background > Personalize your background > Picture / Solid color / Slideshow", text: "Choose a photo, or click Browse photos." },
+          { label: "Colors", path: "Settings > Personalization > Colors > Choose your mode", text: "Light, Dark or Custom. Then pick an Accent color." },
+          { label: "Desktop icon images", path: "Settings > Personalization > Themes > Desktop icon settings > select an icon > Change Icon > pick an image > OK > Apply > OK", text: "For example This PC or Recycle Bin." }
+        ], note: "Restore Default in that window brings back the original icon." }
+      ]},
+
+    { id: "l4", num: 4, title: "Password, Screen Saver & Sleep",
+      blurb: "Passwords and PINs, the screen saver, timeouts, the lock screen and pinned apps.",
+      lessons: [
+        { id: "l4-1", title: "Change your password or PIN", items: [
+          { label: "Password", path: "Settings > Accounts > Sign-in options > Password > Change", text: "Enter your current password, then type the new password and a hint." },
+          { label: "PIN", path: "Settings > Accounts > Sign-in options > PIN (Windows Hello) > Change PIN", text: "Enter the old PIN, then type the new PIN twice." },
+          { label: "Quick way", text: "Press [[Ctrl]] + [[Alt]] + [[Del]], then click Change a password." }
+        ], note: "If you sign in with a Microsoft account, changing the password changes it for your whole Microsoft account." },
+        { id: "l4-2", title: "Use a screen saver", items: [
+          { label: "Open it", path: "Settings > Personalization > Lock screen > Screen saver" },
+          { label: "Choose and set", text: "Pick one from the list (3D Text, Bubbles, Photos…), set the Wait time in minutes, click Preview, then Apply and OK." },
+          { label: "Optional", text: "Tick “On resume, display logon screen” so it asks for your password when you come back." }
+        ]},
+        { id: "l4-3", title: "Change the sleep and screen timeout times", items: [
+          { label: "Open it", path: "Settings > System > Power & battery > Screen, sleep & hibernate timeouts" },
+          { label: "Screen", text: "Turn my screen off after: choose the time." },
+          { label: "Sleep", text: "Put my device to sleep after: choose the time." }
+        ], note: "Each one has On battery power and Plugged in. A desktop PC only shows Plugged in. Screen off only turns off the display. Sleep puts the whole PC into a low-power mode." },
+        { id: "l4-4", title: "Change the lock screen photos: slideshow or one constant photo", items: [
+          { label: "Open it", path: "Settings > Personalization > Lock screen > Personalize your lock screen" },
+          { label: "One constant photo", text: "Choose Picture, then pick a recent photo or click Browse photos." },
+          { label: "Slideshow", text: "Choose Slideshow, then click Add a folder. The photos in that folder change by themselves." },
+          { label: "Windows Spotlight", text: "Microsoft’s own pictures, which change every day." }
+        ]},
+        { id: "l4-5", title: "Pin apps to the taskbar", items: [
+          { label: "From the Start menu", path: "Start > type the app name > right-click the result > Pin to taskbar" },
+          { label: "From the app list", path: "Start > All apps > right-click the app > More > Pin to taskbar" },
+          { label: "From an open app", path: "Right-click the app’s icon on the taskbar > Pin to taskbar" },
+          { label: "From a desktop shortcut", path: "Right-click the shortcut > Show more options > Pin to taskbar" },
+          { label: "Change the order", text: "Drag a pinned icon left or right on the taskbar." },
+          { label: "Remove a pinned app", path: "Right-click the app’s icon on the taskbar > Unpin from taskbar" }
+        ], note: "A pinned app stays on the taskbar after you close it, so you can open it with one click. Unpinning only removes the icon. It does not uninstall the app." }
+      ]}
+  ];
+
+  /* In every question the first option is the correct one. The page shuffles the order each time. */
+  const QUIZ = {
+    l1: [
+      { q: "You are in File Explorer. Which shortcut creates a new folder?",
+        o: ["[[Ctrl]] + [[Shift]] + [[N]]", "[[Ctrl]] + [[N]]", "[[F2]]", "[[Ctrl]] + [[Shift]] + [[F]]"],
+        e: "Ctrl + Shift + N creates a new folder. Ctrl + N only opens another File Explorer window, and F2 renames." },
+      { q: "How do you make a new text file with the mouse?",
+        o: ["Right-click empty space > New > Text Document", "Right-click empty space > View > Text Document", "Right-click empty space > Sort by > Text Document", "Right-click empty space > Refresh > Text Document"],
+        e: "Right-click empty space, choose New, then Text Document. Type the name and press Enter." },
+      { q: "You cut a file and paste it into another folder. Where is the file now?",
+        o: ["Only in the new folder", "In both folders", "Only in the old folder", "In the Recycle Bin"],
+        e: "Cut moves the file. After you paste, it exists only in the new place." },
+      { q: "You cut a file but never paste it anywhere. What happens to the file?",
+        o: ["Nothing. It stays where it was", "It is deleted", "It moves to the Recycle Bin", "It is copied to the Desktop"],
+        e: "Cut does nothing until you paste, so the file is safe. It stays in its old place." },
+      { q: "You want to keep a file where it is and also have a duplicate on the Desktop. What do you use?",
+        o: ["Copy, then Paste on the Desktop", "Cut, then Paste on the Desktop", "Rename the file to Desktop", "Select the file and press [[Del]]"],
+        e: "Copy leaves the original in place and Paste makes the duplicate. Cut would move the file instead." },
+      { q: "Which pair of shortcuts copies a file and then pastes it?",
+        o: ["[[Ctrl]] + [[C]], then [[Ctrl]] + [[V]]", "[[Ctrl]] + [[X]], then [[Ctrl]] + [[V]]", "[[Ctrl]] + [[C]], then [[Ctrl]] + [[Z]]", "[[Ctrl]] + [[V]], then [[Ctrl]] + [[C]]"],
+        e: "Ctrl + C copies and Ctrl + V pastes. Ctrl + X cuts, and Ctrl + Z undoes the last action." },
+      { q: "How do you rename a folder with the mouse?",
+        o: ["Right-click the folder > Rename > type the new name > Enter", "Right-click the folder > Copy > type the new name > Enter", "Right-click empty space > Rename > type the new name > Enter", "Double-click the folder > Rename > type the new name"],
+        e: "Right-click the folder itself, choose Rename, type the new name and press Enter. You can also select the folder and press F2." },
+      { q: "Which steps copy a file to another folder with the mouse?",
+        o: ["Right-click the file > Copy > open the destination > Right-click empty space > Paste", "Right-click the file > Cut > open the destination > Right-click empty space > Paste", "Right-click the file > Copy > open the destination > Right-click empty space > Refresh", "Right-click the file > Paste > open the destination > Right-click empty space > Copy"],
+        e: "Copy first, open the destination, then Paste. If you start with Cut, the file moves instead of being duplicated." },
+      { q: "Why should you keep the extension, such as .txt, when you rename a file?",
+        o: ["Windows may not know which app should open it", "Windows deletes any file without an extension", "The file would turn into a folder", "The file can no longer be copied or cut"],
+        e: "The extension tells Windows what kind of file it is. If you remove it, the file may not open." },
+      { q: "Which of these puts a file inside a folder?",
+        o: ["Drag the file onto the folder and let go", "Right-click the file > Rename > type the folder’s name", "Select the file and press [[F2]]", "Right-click the folder > Copy"],
+        e: "Drag and drop moves the file into the folder. You can also cut the file, open the folder and paste." }
+    ],
+    l2: [
+      { q: "Which shortcut selects all the files in a folder?",
+        o: ["[[Ctrl]] + [[A]]", "[[Ctrl]] + [[S]]", "[[Shift]] + [[A]]", "[[Alt]] + [[A]]"],
+        e: "Click inside the folder, then press Ctrl + A to select every file in it." },
+      { q: "You want to select three files that are not next to each other. What do you do?",
+        o: ["Hold [[Ctrl]] and click each file", "Click the first file, hold [[Shift]] and click the last file", "Press [[Ctrl]] + [[A]]", "Drag a box around the first and last file"],
+        e: "Ctrl + Left click adds one separate file at a time. Shift + Left click would also select every file between the two you click." },
+      { q: "Which method selects a continuous range of files, from the first one you click to the last?",
+        o: ["[[Shift]] + Left click", "[[Ctrl]] + Left click", "[[Ctrl]] + [[A]]", "Double-click the first file"],
+        e: "Click the first file, hold Shift, then click the last file. Every file in between is selected too." },
+      { q: "A file is selected. You hold Ctrl and click it again. What happens?",
+        o: ["It is deselected", "It is deleted", "It is copied", "Every other file is selected"],
+        e: "Ctrl + Left click switches a file on and off. Click once to add it to the selection and click again to remove it." },
+      { q: "What does dragging a box over empty space in a folder select?",
+        o: ["Everything inside the box", "Only the first file in the box", "Every file in the folder", "Nothing. It moves the folder"],
+        e: "Hold left click on empty space and drag. Every file in the box is selected when you let go." },
+      { q: "What does Invert selection do?",
+        o: ["Selects everything you did not select", "Selects every file in the folder", "Deselects every file in the folder", "Reverses the order of the files"],
+        e: "The files you picked become deselected and all the others become selected. Find it under See more (…) in File Explorer." },
+      { q: "In Windows 11, where do you find Create shortcut when you right-click a file?",
+        o: ["Show more options", "Open with", "Share", "Properties"],
+        e: "Right-click the file, choose Show more options, then Create shortcut." },
+      { q: "How can you recognise a shortcut file?",
+        o: ["It has a small arrow on its icon", "It has a small padlock on its icon", "It has a green tick on its icon", "Its name always starts with a dot"],
+        e: "A shortcut shows a small arrow on its icon, and its name ends with “- Shortcut”." },
+      { q: "What happens to the original file when you delete its shortcut?",
+        o: ["Nothing. The original file stays", "The original file is deleted too", "The original file moves to the Desktop", "The original file is renamed"],
+        e: "A shortcut is only a link to the file. Deleting the link does not touch the original." },
+      { q: "What is the faster way to put a shortcut for a file on the Desktop?",
+        o: ["Right-click the file > Show more options > Send to > Desktop (create shortcut)", "Right-click the file > Show more options > Send to > Compressed (zipped) folder", "Right-click the Desktop > View > Create shortcut", "Right-click the file > Rename > Desktop"],
+        e: "Send to > Desktop (create shortcut) makes the shortcut and puts it on the Desktop in one step." }
+    ],
+    l3: [
+      { q: "Which shortcut opens the Start menu?",
+        o: ["[[Ctrl]] + [[Esc]]", "[[Win]] + [[D]]", "[[Win]] + [[I]]", "[[Ctrl]] + [[Shift]] + [[N]]"],
+        e: "Ctrl + Esc opens the Start menu, like the Windows key. Win + D shows the desktop and Win + I opens Settings." },
+      { q: "Which option puts the PC in low-power mode and wakes it up quickly?",
+        o: ["Sleep", "Restart", "Shut down", "Lock"],
+        e: "Sleep keeps your work in memory and saves power. Shut down closes everything, Restart shuts down and turns the PC on again, and Lock only locks the screen." },
+      { q: "How do you change the size of the desktop icons?",
+        o: ["Right-click the Desktop > View > Large / Medium / Small icons", "Right-click the Desktop > Sort by > Size", "Right-click the Desktop > Refresh", "Right-click the Desktop > Personalize > Themes"],
+        e: "Under View you choose Large icons, Medium icons or Small icons. Holding Ctrl and scrolling the mouse wheel also works." },
+      { q: "What does Auto arrange icons do?",
+        o: ["Keeps icons in order from the top-left, so you can’t drop them anywhere you like", "Snaps icons to invisible grid squares but lets you place them freely", "Hides every icon on the desktop", "Makes all the icons bigger"],
+        e: "Auto arrange packs the icons in order from the top-left and stops you dropping them wherever you like. A tick means it is on." },
+      { q: "What does Align icons to grid do?",
+        o: ["Snaps icons to invisible grid squares so they stay neat", "Packs icons in order from the top-left and locks their place", "Hides all the desktop icons", "Sorts the icons by name"],
+        e: "Icons snap into neat rows and columns. If the option looks greyed out, turn off Auto arrange icons first." },
+      { q: "You right-click the Desktop > View and untick Show desktop icons. What happens?",
+        o: ["All the icons are hidden, not deleted", "All the icons are deleted", "Only the shortcuts disappear", "The desktop turns off"],
+        e: "The icons are only hidden. Tick Show desktop icons again to bring them back." },
+      { q: "Where do you change the brightness and turn on Night light?",
+        o: ["Settings > System > Display", "Settings > Personalization > Colors", "Settings > Accounts > Sign-in options", "Settings > Personalization > Background"],
+        e: "Both are on the Display page. Night light makes the screen warmer and easier on the eyes at night." },
+      { q: "After you change the display resolution or orientation, what do you click within about 15 seconds to keep the change?",
+        o: ["Keep changes", "Revert", "Apply", "Restart now"],
+        e: "If you do not click Keep changes, Windows goes back to the old setting by itself. Scale, resolution and orientation are under Settings > System > Display > Scale & layout." },
+      { q: "Where do you change the desktop background and the colors?",
+        o: ["Settings > Personalization", "Settings > System > Display", "Settings > Accounts", "Settings > System > Power & battery"],
+        e: "Background and Colors are both pages inside Personalization. Colors has Light, Dark or Custom mode and the Accent color." },
+      { q: "How do you change the picture of the This PC or Recycle Bin icon?",
+        o: ["Settings > Personalization > Themes > Desktop icon settings > Change Icon", "Settings > Personalization > Colors > Accent color", "Settings > System > Display > Scale & layout", "Settings > Personalization > Lock screen"],
+        e: "Select the icon, click Change Icon, pick an image, then click OK, Apply and OK. Restore Default brings back the original icon." }
+    ],
+    l4: [
+      { q: "Where do you change your Windows password or PIN?",
+        o: ["Settings > Accounts > Sign-in options", "Settings > Personalization > Lock screen", "Settings > System > Power & battery", "Settings > Personalization > Themes"],
+        e: "Sign-in options has Password and PIN (Windows Hello). Click Change under the one you want." },
+      { q: "Which shortcut leads to the Change a password option?",
+        o: ["[[Ctrl]] + [[Alt]] + [[Del]]", "[[Ctrl]] + [[Shift]] + [[Esc]]", "[[Win]] + [[L]]", "[[Ctrl]] + [[Esc]]"],
+        e: "Press Ctrl + Alt + Del, then click Change a password. Win + L only locks the PC." },
+      { q: "Where do you open the screen saver settings?",
+        o: ["Settings > Personalization > Lock screen > Screen saver", "Settings > System > Display > Screen saver", "Settings > System > Power & battery > Screen saver", "Settings > Accounts > Sign-in options > Screen saver"],
+        e: "Screen saver is on the Lock screen page. It opens a small window where you pick the screen saver and the wait time." },
+      { q: "What does “On resume, display logon screen” do?",
+        o: ["Asks for your password when you come back", "Starts the screen saver sooner", "Changes your password", "Turns on Night light"],
+        e: "After the screen saver, you have to sign in again. This keeps your PC private when you walk away." },
+      { q: "Where do you change when the screen turns off and when the PC goes to sleep?",
+        o: ["Settings > System > Power & battery > Screen, sleep & hibernate timeouts", "Settings > Personalization > Lock screen", "Settings > System > Display > Brightness", "Settings > Accounts > Sign-in options"],
+        e: "Each timeout has On battery power and Plugged in. A desktop PC only shows Plugged in." },
+      { q: "What is the difference between Screen off and Sleep?",
+        o: ["Screen off only turns off the display. Sleep puts the whole PC in low-power mode", "Screen off puts the whole PC in low-power mode. Sleep only turns off the display", "Screen off deletes unsaved work. Sleep keeps it", "There is no difference"],
+        e: "Screen off only turns off the display. Sleep puts the whole PC into a low-power mode." },
+      { q: "Which lock screen option keeps one constant photo?",
+        o: ["Picture", "Slideshow", "Windows Spotlight", "Screen saver"],
+        e: "Choose Picture, then pick a recent photo or click Browse photos. Slideshow changes photos from a folder, and Windows Spotlight shows Microsoft’s own pictures." },
+      { q: "How do you make your lock screen show a slideshow of your own photos?",
+        o: ["Choose Slideshow, then click Add a folder", "Choose Picture, then click Browse photos", "Choose Windows Spotlight, then click Add a folder", "Choose Slideshow, then click Change PIN"],
+        e: "The photos in the folder you add change by themselves. You find it under Settings > Personalization > Lock screen > Personalize your lock screen." },
+      { q: "How do you pin an app to the taskbar from the Start menu?",
+        o: ["Start > type the app name > right-click the result > Pin to taskbar", "Start > Power button > Pin to taskbar", "Right-click the Desktop > View > Pin to taskbar", "Settings > Personalization > Lock screen > Pin to taskbar"],
+        e: "Search for the app in Start, right-click it and choose Pin to taskbar. You can also use Start > All apps > right-click the app > More > Pin to taskbar." },
+      { q: "An app is open and its icon is on the taskbar. How do you keep the icon there after you close the app?",
+        o: ["Right-click the icon > Pin to taskbar", "Double-click the icon", "Right-click the icon > Close window", "Right-click the icon > Unpin from taskbar"],
+        e: "Right-click the app’s icon and choose Pin to taskbar. The icon stays after you close the app. To remove it later, choose Unpin from taskbar." }
+    ]
+  };
+
+  const SHORTCUTS = {
+    main: [
+      [["Ctrl", "Shift", "N"], "Create a new folder"],
+      [["F2"], "Rename"],
+      [["Ctrl", "C"], "Copy"],
+      [["Ctrl", "X"], "Cut"],
+      [["Ctrl", "V"], "Paste"],
+      [["Del"], "Delete"],
+      [["Ctrl", "Z"], "Undo (for example, restore the last deleted item)"],
+      [["Ctrl", "Y"], "Redo (repeat the last undone action)"],
+      [["Win", "I"], "Open Settings"],
+      [["Win"], "Open or close the Start menu"],
+      [["Ctrl", "Esc"], "Open the Start menu"],
+      [["Win", "D"], "Show or hide the desktop"]
+    ],
+    extra: [
+      [["Ctrl", "A"], "Select all files in the folder"],
+      [["Ctrl", "Left click"], "Select separate files, one by one"],
+      [["Shift", "Left click"], "Select a continuous range of files"],
+      [["Win", "L"], "Lock the PC"],
+      [["Ctrl", "Mouse wheel"], "Change the size of the desktop icons"]
+    ]
+  };
+
+  /* ---------- helpers ---------- */
+  const app = document.getElementById("app");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const rich = s => esc(s).replace(/\[\[(.+?)\]\]/g, "<kbd>$1</kbd>");
+  const pad = n => String(n).padStart(2, "0");
+
+  let done = new Set();
+  try { done = new Set(JSON.parse(localStorage.getItem("ict-revised") || "[]")); } catch (e) { /* storage unavailable */ }
+  const save = () => { try { localStorage.setItem("ict-revised", JSON.stringify([...done])); } catch (e) { /* ignore */ } };
+
+  const countDone = L => L.lessons.filter(x => done.has(x.id)).length;
+
+  function pathHTML(p, animate) {
+    const parts = p.split(" > ");
+    let k = 0;
+    const st = () => animate ? ' style="--k:' + (k++) + '"' : "";
+    return '<div class="path">' + parts.map((s, i) =>
+      (i ? '<span class="sep" aria-hidden="true"' + st() + '>›</span>' : "") + '<span class="seg"' + st() + ">" + esc(s) + "</span>"
+    ).join("") + "</div>";
+  }
+  function keysHTML(keys) {
+    return '<div class="keys"><span class="klabel">Shortcut</span>' +
+      keys.map(c => c.map(k => "<kbd>" + esc(k) + "</kbd>").join('<span class="plus">+</span>')).join('<span class="then">then</span>') + "</div>";
+  }
+  const noteHTML = n => '<div class="note"><strong>Note:</strong>' + rich(n) + "</div>";
+  function itemHTML(it) {
+    return '<div class="item">' +
+      (it.label ? '<div class="lab">' + esc(it.label) + "</div>" : "") +
+      (it.path ? pathHTML(it.path) : "") +
+      (it.text ? '<p class="text">' + rich(it.text) + "</p>" : "") +
+      (it.keys ? keysHTML(it.keys) : "") +
+      (it.note ? noteHTML(it.note) : "") + "</div>";
+  }
+  function tableHTML(t) {
+    return '<div class="tbl"><table><thead><tr>' + t.head.map(h => "<th>" + esc(h) + "</th>").join("") + "</tr></thead><tbody>" +
+      t.rows.map(r => "<tr>" + r.map((c, i) => i === 0 ? '<th scope="row">' + rich(c) + "</th>" : "<td>" + rich(c) + "</td>").join("") + "</tr>").join("") +
+      "</tbody></table></div>";
+  }
+  const CHECK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
+  function lessonHTML(L, i) {
+    const on = done.has(L.id);
+    return '<details class="lesson" id="' + L.id + '"><summary>' +
+      '<span class="idx">' + (i + 1) + "</span>" +
+      '<span class="ltitle">' + esc(L.title) + "</span>" +
+      '<button class="tick' + (on ? " on" : "") + '" type="button" data-id="' + L.id + '" aria-pressed="' + on + '" aria-label="Mark as revised: ' + esc(L.title) + '">' + CHECK + '<span class="tl">Revised</span></button>' +
+      '<span class="chev" aria-hidden="true"></span></summary>' +
+      '<div class="body">' + (L.table ? tableHTML(L.table) : "") + (L.items || []).map(itemHTML).join("") + (L.note ? noteHTML(L.note) : "") + "</div></details>";
+  }
+
+  /* ---------- views ---------- */
+  const ORDER = ["l1", "l2", "l3", "l4", "shortcuts", "quiz"];
+  const NAMES = { shortcuts: "Keyboard shortcuts", quiz: "Lecture quiz" };
+  LECTURES.forEach(L => { NAMES[L.id] = "Lecture " + L.num + ": " + L.title; });
+
+  function homeView() {
+    const total = SHORTCUTS.main.length + SHORTCUTS.extra.length;
+    const tiles = LECTURES.map(L => {
+      const n = countDone(L), p = Math.round(n / L.lessons.length * 100);
+      return '<a class="tile" href="#/' + L.id + '"><div class="num" aria-hidden="true">' + pad(L.num) + "</div>" +
+        '<div><h2>' + esc(L.title) + "</h2><p>" + esc(L.blurb) + "</p></div>" +
+        '<div><div class="bar" style="--p:' + p + '%"><i></i></div><div class="meta">' + n + " of " + L.lessons.length + " lessons revised</div></div></a>";
+    }).join("");
+    return '<section class="hero"><h1>ICT Practical Lessons</h1>' +
+      "<p>Everything from our four ICT lab lectures. Open a lecture to see how each task is done, tick the lessons you have revised, test yourself on the shortcuts, and take a quiz on each lecture.</p>" +
+      pathHTML("Settings > Personalization > Lock screen > Screen saver", true) + "</section>" +
+      '<h2 class="sec-h">Lectures</h2><div class="tiles">' + tiles +
+      '<a class="tile sc" href="#/shortcuts"><div><h2>Keyboard shortcuts</h2><p>' + total + " shortcuts, with a test-yourself mode.</p></div>" +
+      '<div class="demo" aria-hidden="true"><span><kbd>Ctrl</kbd>+<kbd>C</kbd></span><span><kbd>Ctrl</kbd>+<kbd>V</kbd></span><span><kbd>Win</kbd>+<kbd>D</kbd></span></div></a>' + quizTile() + "</div>";
+  }
+
+  function pagerHTML(key) {
+    const i = ORDER.indexOf(key), prev = ORDER[i - 1], next = ORDER[i + 1];
+    return '<nav class="pager" aria-label="Lectures">' +
+      (prev ? '<a class="pg" href="#/' + prev + '"><small>Previous</small><b>' + esc(NAMES[prev]) + "</b></a>" : "") +
+      (next ? '<a class="pg next" href="#/' + next + '"><small>Next</small><b>' + esc(NAMES[next]) + "</b></a>" : "") + "</nav>";
+  }
+
+  let current = null;
+  function lectureView(L) {
+    current = L;
+    return '<a class="back" href="#/">All lectures</a>' +
+      '<div class="lhead"><div class="bign" aria-hidden="true">' + pad(L.num) + '</div><div><h1>Lecture ' + L.num + ": " + esc(L.title) + "</h1><p>" + esc(L.blurb) + "</p></div></div>" +
+      '<div class="tools"><div class="prog"><div class="bar" id="pbar"><i></i></div><span id="ptxt"></span></div>' +
+      '<div class="btns"><a class="btn go" href="#/quiz/' + L.id + '">Take the quiz</a><button class="btn" id="exp" type="button">Expand all</button><button class="btn" id="col" type="button">Collapse all</button></div></div>' +
+      "<div>" + L.lessons.map(lessonHTML).join("") + "</div>" + pagerHTML(L.id);
+  }
+  function updateProgress() {
+    if (!current) return;
+    const n = countDone(current), t = document.getElementById("ptxt"), b = document.getElementById("pbar");
+    if (t) t.textContent = n + " of " + current.lessons.length + " lessons revised";
+    if (b) b.style.setProperty("--p", Math.round(n / current.lessons.length * 100) + "%");
+  }
+
+  function shortcutsView() {
+    current = null;
+    const row = r => '<div class="srow"><div class="skeys">' + r[0].map(k => "<kbd>" + esc(k) + "</kbd>").join('<span class="plus">+</span>') +
+      '</div><div class="act">' + rich(r[1]) + "</div></div>";
+    return '<a class="back" href="#/">All lectures</a>' +
+      '<div class="lhead"><div class="bign word" aria-hidden="true">Ctrl</div><div><h1>Keyboard shortcuts</h1><p>Win means the Windows key, the one with the logo.</p></div></div>' +
+      '<div class="tools"><button class="btn" id="cover" type="button" aria-pressed="false">Test yourself</button></div>' +
+      '<p class="hint" id="hint" hidden>The actions are hidden. Say what each shortcut does, then click its row to check.</p>' +
+      '<div id="slist"><h2 class="sec-h">Shortcut list</h2>' + SHORTCUTS.main.map(row).join("") +
+      '<h2 class="sec-h">More from the lectures</h2>' + SHORTCUTS.extra.map(row).join("") + "</div>" + pagerHTML("shortcuts");
+  }
+
+  /* ---------- quiz ---------- */
+  const QCOUNT = 10, LET = "ABCD";
+  let best = {};
+  try { best = JSON.parse(localStorage.getItem("ict-quiz-best") || "{}"); } catch (e) { best = {}; }
+  if (!best || typeof best !== "object" || Array.isArray(best)) best = {};
+  const saveBest = () => { try { localStorage.setItem("ict-quiz-best", JSON.stringify(best)); } catch (e) { /* ignore */ } };
+  const plain = s => String(s).replace(/\[\[|\]\]/g, "");
+  const shuffle = a => {
+    const r = a.slice();
+    for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = r[i]; r[i] = r[j]; r[j] = t; }
+    return r;
+  };
+  const hasBest = k => typeof best[k] === "number";
+  const bestText = k => hasBest(k) ? "Best score: " + best[k] + " of " + QCOUNT : "Not tried yet";
+  let quiz = null;
+
+  function quizTile() {
+    const total = LECTURES.reduce((n, L) => n + QUIZ[L.id].length, 0);
+    const chips = LECTURES.map(L => '<span class="qchip"><b>' + pad(L.num) + "</b>" + (hasBest(L.id) ? best[L.id] + "/" + QCOUNT : "–") + "</span>").join("");
+    return '<a class="tile qz" href="#/quiz"><div><h2>Lecture quiz</h2><p>' + total + " questions, " + QUIZ.l1.length + " for each lecture. Pick a lecture and test yourself.</p></div>" +
+      '<div class="qchips" aria-hidden="true">' + chips + "</div></a>";
+  }
+
+  function quizHubView() {
+    const total = LECTURES.reduce((n, L) => n + QUIZ[L.id].length, 0);
+    const tiles = LECTURES.map(L => {
+      const p = hasBest(L.id) ? Math.round(best[L.id] / QCOUNT * 100) : 0;
+      return '<a class="tile" href="#/quiz/' + L.id + '" aria-label="Lecture ' + L.num + " quiz: " + esc(L.title) + ". " + bestText(L.id) + '">' +
+        '<div class="num" aria-hidden="true">' + pad(L.num) + "</div>" +
+        "<div><h2>" + esc(L.title) + "</h2><p>" + QUIZ[L.id].length + " questions</p></div>" +
+        '<div><div class="bar" style="--p:' + p + '%"><i></i></div><div class="meta">' + bestText(L.id) + "</div></div></a>";
+    }).join("");
+    return '<a class="back" href="#/">All lectures</a>' +
+      '<div class="lhead"><div class="bign" aria-hidden="true">' + total + "</div><div><h1>Lecture quiz</h1><p>Test yourself on what we studied. You see the explanation after every answer, and the order of the answers changes each time.</p></div></div>" +
+      '<h2 class="sec-h">Choose a quiz</h2><div class="tiles">' + tiles +
+      '<a class="tile qz" href="#/quiz/mix"><div><h2>Mixed quiz</h2><p>' + QCOUNT + ' random questions from all four lectures.</p></div><div class="meta">' + bestText("mix") + "</div></a></div>" +
+      pagerHTML("quiz");
+  }
+
+  function quizRunView(key) {
+    const L = LECTURES.find(x => x.id === key);
+    const head = L
+      ? '<div class="bign" aria-hidden="true">' + pad(L.num) + '</div><div><h1>Lecture ' + L.num + " quiz</h1><p>" + esc(L.title) + "</p></div>"
+      : '<div class="bign word" aria-hidden="true">Mix</div><div><h1>Mixed quiz</h1><p>Random questions from all four lectures.</p></div>';
+    return '<a class="back" href="#/quiz">All quizzes</a><div class="lhead">' + head + '</div><div id="qbox"></div><div class="vh" id="qlive" aria-live="polite"></div>';
+  }
+
+  function buildQuiz(key) {
+    const src = key === "mix" ? LECTURES : LECTURES.filter(x => x.id === key);
+    let pool = [];
+    src.forEach(L => QUIZ[L.id].forEach(q => pool.push({ q: q, L: L })));
+    pool = shuffle(pool);
+    if (key === "mix") pool = pool.slice(0, QCOUNT);
+    return {
+      key: key, score: 0, i: 0, finished: false,
+      items: pool.map(p => ({
+        text: p.q.q, why: p.q.e, L: p.L, pick: -1,
+        opts: shuffle(p.q.o.map((t, k) => ({ t: t, ok: k === 0 })))
+      }))
+    };
+  }
+  function startQuiz(key) { quiz = buildQuiz(key); renderQ(""); }
+
+  function renderQ(mode) {
+    const box = document.getElementById("qbox");
+    if (!box || !quiz) return;
+    const it = quiz.items[quiz.i], n = quiz.items.length, done = it.pick !== -1;
+    const right = it.opts.findIndex(o => o.ok);
+    const good = done && it.pick === right;
+    const last = quiz.i === n - 1;
+    const pct = Math.round((quiz.i + (done ? 1 : 0)) / n * 100);
+    const opts = it.opts.map((o, k) => {
+      let cls = "opt", tag = "";
+      if (done) {
+        if (o.ok) { cls += " ok"; tag = '<span class="otag">✓ Correct</span>'; }
+        else if (k === it.pick) { cls += " bad"; tag = '<span class="otag">✕ Your answer</span>'; }
+        else cls += " dim";
+      }
+      return '<button type="button" class="' + cls + '" data-k="' + k + '"><span class="ol">' + LET[k] + '</span><span class="ot">' + rich(o.t) + "</span>" + tag + "</button>";
+    }).join("");
+    const fb = done
+      ? '<div class="fb' + (good ? "" : " no") + '"><b>' + (good ? "Correct." : "Not quite. The answer is " + LET[right] + ".") + "</b>" + rich(it.why) + "</div>"
+      : "";
+    box.innerHTML =
+      '<div class="tools"><div class="prog"><div class="bar" style="--p:' + pct + '%"><i></i></div>Question ' + (quiz.i + 1) + " of " + n + "</div>" +
+      '<span class="meta">' + quiz.score + " correct so far</span></div>" +
+      '<section class="qcard' + (done ? " done" : "") + '" aria-labelledby="qtext">' +
+      (quiz.key === "mix" ? '<div class="qsrc">Lecture ' + it.L.num + ": " + esc(it.L.title) + "</div>" : "") +
+      '<h2 class="qtext" id="qtext" tabindex="-1">' + rich(it.text) + "</h2>" +
+      '<div class="opts" role="group" aria-label="Answers">' + opts + "</div>" + fb +
+      (done ? '<div class="qnav"><button type="button" class="btn go" id="nextq">' + (last ? "See my score" : "Next question") + "</button></div>" : "") +
+      "</section>" +
+      (done ? "" : '<p class="hint">Tip: press 1, 2, 3 or 4 on the keyboard to pick an answer.</p>');
+    if (mode === "next") { const b = document.getElementById("nextq"); if (b) b.focus(); }
+    else if (mode === "q") { const t = document.getElementById("qtext"); if (t) t.focus(); }
+  }
+
+  function say(text) { const live = document.getElementById("qlive"); if (live) live.textContent = text; }
+
+  function answer(k) {
+    if (!quiz || quiz.finished) return;
+    const it = quiz.items[quiz.i];
+    if (it.pick !== -1 || !it.opts[k]) return;
+    it.pick = k;
+    if (it.opts[k].ok) quiz.score++;
+    renderQ("next");
+    const right = it.opts.findIndex(o => o.ok);
+    say((k === right ? "Correct. " : "Not quite. The answer is " + LET[right] + ". ") + plain(it.why));
+  }
+
+  function nextQ() {
+    if (!quiz) return;
+    say("");
+    if (quiz.i < quiz.items.length - 1) { quiz.i++; renderQ("q"); }
+    else renderResult();
+  }
+
+  function renderResult() {
+    const box = document.getElementById("qbox");
+    if (!box || !quiz) return;
+    quiz.finished = true;
+    const n = quiz.items.length, s = quiz.score;
+    if (!hasBest(quiz.key) || s > best[quiz.key]) { best[quiz.key] = s; saveBest(); }
+    const msg = s === n ? "Perfect score. You are ready for this one."
+      : s >= 8 ? "Great work. Read the questions you missed and you are set."
+      : s >= 5 ? "Good start. Review the lessons you missed, then try again."
+      : "Keep going. Open the lecture, read the steps, then try again.";
+    const L = LECTURES.find(x => x.id === quiz.key);
+    const missed = quiz.items.filter(it => !it.opts[it.pick].ok);
+    const review = missed.map(it => {
+      const right = it.opts.find(o => o.ok), mine = it.opts[it.pick];
+      return '<div class="rv"><div class="rq">' + rich(it.text) + "</div>" +
+        '<div class="ra no"><b>Your answer</b><span>' + rich(mine.t) + "</span></div>" +
+        '<div class="ra yes"><b>Correct answer</b><span>' + rich(right.t) + "</span></div>" +
+        '<p class="rw">' + rich(it.why) + "</p>" +
+        '<a class="rl" href="#/' + it.L.id + '">Review in Lecture ' + it.L.num + "</a></div>";
+    }).join("");
+    box.innerHTML =
+      '<div class="qres"><div class="qbig" aria-hidden="true">' + s + "<small>/" + n + "</small></div><div>" +
+      '<h2 class="qrt" id="qtext" tabindex="-1">You scored ' + s + " out of " + n + "</h2><p>" + msg + '</p><p class="meta">' + bestText(quiz.key) + "</p>" +
+      '<div class="btns"><button type="button" class="btn go" id="again">Try again</button>' +
+      (L ? '<a class="btn" href="#/' + L.id + '">Review Lecture ' + L.num + "</a>" : "") +
+      '<a class="btn" href="#/quiz">All quizzes</a></div></div></div>' +
+      (missed.length ? '<h2 class="sec-h">Questions to review</h2>' + review : "");
+    say("You scored " + s + " out of " + n + ".");
+    const t = document.getElementById("qtext"); if (t) t.focus();
+  }
+
+  app.addEventListener("click", e => {
+    if (!quiz) return;
+    const o = e.target.closest(".opt");
+    if (o) { answer(Number(o.dataset.k)); return; }
+    if (e.target.closest("#nextq")) { nextQ(); return; }
+    if (e.target.closest("#again")) { quiz = buildQuiz(quiz.key); say(""); renderQ("q"); }
+  });
+  document.addEventListener("keydown", e => {
+    if (!quiz || quiz.finished || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = { "1": 0, "2": 1, "3": 2, "4": 3, a: 0, b: 1, c: 2, d: 3 }[String(e.key).toLowerCase()];
+    if (k !== undefined) answer(k);
+  });
+
+  /* a soft light that follows the pointer on tiles and cards */
+  app.addEventListener("pointermove", e => {
+    const t = e.target.closest && e.target.closest(".tile, .pg");
+    if (!t) return;
+    const r = t.getBoundingClientRect();
+    t.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    t.style.setProperty("--my", (e.clientY - r.top) + "px");
+  });
+
+  /* ---------- routing ---------- */
+  function route() {
+    const key = (location.hash || "").replace(/^#\/?/, "");
+    let html, title = "ICT Practical Lessons";
+    const L = LECTURES.find(x => x.id === key);
+    const qm = /^quiz\/(l[1-4]|mix)$/.exec(key);
+    let after = null;
+    quiz = null;
+    if (key === "shortcuts") { html = shortcutsView(); title = "Keyboard shortcuts | ICT Practical"; }
+    else if (key === "quiz") { current = null; html = quizHubView(); title = "Lecture quiz | ICT Practical"; }
+    else if (qm) {
+      current = null; html = quizRunView(qm[1]);
+      title = (qm[1] === "mix" ? "Mixed quiz" : "Lecture " + qm[1].slice(1) + " quiz") + " | ICT Practical";
+      after = () => startQuiz(qm[1]);
+    }
+    else if (L) { html = lectureView(L); title = NAMES[L.id] + " | ICT Practical"; }
+    else { current = null; html = homeView(); }
+    app.innerHTML = html;
+    document.title = title;
+    window.scrollTo(0, 0);
+    const h = app.querySelector("h1");
+    if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
+    updateProgress();
+    if (after) after();
+  }
+
+  app.addEventListener("click", e => {
+    const tick = e.target.closest(".tick");
+    if (tick) {
+      e.preventDefault(); e.stopPropagation();
+      const id = tick.dataset.id;
+      if (done.has(id)) done.delete(id); else done.add(id);
+      save();
+      tick.classList.toggle("on", done.has(id));
+      tick.setAttribute("aria-pressed", String(done.has(id)));
+      updateProgress();
+      return;
+    }
+    if (e.target.closest("#exp") || e.target.closest("#col")) {
+      const open = !!e.target.closest("#exp");
+      app.querySelectorAll("details.lesson").forEach(d => { d.open = open; });
+      return;
+    }
+    const cover = e.target.closest("#cover");
+    if (cover) {
+      const on = cover.getAttribute("aria-pressed") !== "true";
+      cover.setAttribute("aria-pressed", String(on));
+      cover.textContent = on ? "Show answers" : "Test yourself";
+      const list = document.getElementById("slist"), hint = document.getElementById("hint");
+      list.classList.toggle("covered", on);
+      hint.hidden = !on;
+      list.querySelectorAll(".srow").forEach(r => {
+        r.classList.remove("show");
+        if (on) r.setAttribute("tabindex", "0"); else r.removeAttribute("tabindex");
+      });
+      return;
+    }
+    const r = e.target.closest(".srow");
+    if (r && r.closest(".covered")) r.classList.toggle("show");
+  });
+  app.addEventListener("keydown", e => {
+    const r = e.target.closest && e.target.closest(".srow");
+    if (r && r.closest(".covered") && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); r.classList.toggle("show"); }
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && location.hash && location.hash !== "#/") location.hash = "#/";
+  });
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>
